@@ -1,9 +1,11 @@
 CREATE TABLE departments(
-department_id INT AUTO_INCREMENT PRIMARY KEY,
+department_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(20) NOT NULL,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+-- UNSIGNEDを設定するとマイナス値を格納できなくなる。
+
 
 ALTER TABLE people ADD department_id INT UNSIGNED AFTER email;
 
@@ -47,28 +49,38 @@ UPDATE people SET department_id = 3 WHERE person_id = 3;
 UPDATE people SET department_id = 4 WHERE person_id = 5;
 UPDATE people SET department_id = 5 WHERE person_id = 6;
 
-select name,age from people
+SELECT name,age FROM people
 WHERE gender = 1
 ORDER BY age DESC;
 
 -- テーブル名`people`の中にあるカラム名`department_id`が１の値の`name`,`email`,`age`を昇順で表示する。
 
-select name from people
-WHERE (gender = '2' AND age BETWEEN 20 AND 29)
-OR (gender = '1' AND age BETWEEN 40 AND 49);
+SELECT * FROM people
+WHERE (gender = '1' AND age BETWEEN 40 AND 49)
+OR (gender = '2' AND age BETWEEN 20 AND 29);
 
-select age from people
+SELECT age FROM people
 WHERE (department_id = 1)
 ORDER BY age;
 
-select AVG(age) AS average_age FROM people
+SELECT AVG(age) AS average_age FROM people
 WHERE department_id = 2
 AND gender = '2';
 
-select p.name,p.department_id,r.content
-FROM people p JOIN reports r ON p.person_id = r.person_id;
+SELECT
+  p.name,d.name,r.content
+FROM
+  people p 
+JOIN
+  reports r 
+ON
+  p.person_id = r.person_id 
+JOIN
+  departments d
+ON
+  p.department_id = d.department_id;
 
-select p.name
+SELECT p.name
 FROM people p LEFT OUTER JOIN reports r USING (person_id)
 WHERE content IS NULL;
 
